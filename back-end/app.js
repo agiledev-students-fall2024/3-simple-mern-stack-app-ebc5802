@@ -5,6 +5,8 @@ const cors = require('cors') // middleware for enabling CORS (Cross-Origin Resou
 const mongoose = require('mongoose')
 
 const app = express() // instantiate an Express object
+const port = process.env.PORT || 3000
+app.use('/images',express.static('public/images'))
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' })) // log all incoming requests, except when in unit test mode.  morgan has a few logging default styles - dev is a nice concise color-coded style
 app.use(cors()) // allow cross-origin resource sharing
 
@@ -18,7 +20,22 @@ mongoose
   .then(data => console.log(`Connected to MongoDB`))
   .catch(err => console.error(`Failed to connect to MongoDB: ${err}`))
 
-// load the dataabase models we want to deal with
+// a route to handle fetching about us page
+app.get('/about', async (req, res) => {
+  res.json({
+    name: 'Edison Chen',
+    url: `http://localhost:${port}/images/IMG_1.jpeg`,
+    description: [
+      'Hello! I am a senior at NYU Stern pursuing a dual degree in Business, Technology, and Entrepreneurship + computer science. I\'m passionate about AI 🧠 and Entrepreneurship 💼. I blend my technical expertise with a desire to make impactful contributions in both startups and product development.',
+      'At NYU, I co-founded the NYU Product Management Club, a space where students could explore product development in a hands-on environment. I also lead Print3D@NYU, a club dedicated to exploring 3D printing technologies.',
+      'Having been overweight for much of my life, I made a transformative change, losing over 70 pounds in just seven months. This experience has become a cornerstone of my personal philosophy, reinforcing the importance of discipline, long-term goal setting, and healthy habit-building. Whether it’s through weightlifting, badminton, or Brazilian jiu-jitsu, my commitment to fitness has reshaped my perspective on life, making me more resilient both mentally and physically.',
+      'If you\'re interested in learning about some of my projects, please check out my website here: https://edison-chen.notion.site/'
+    ],
+    status: 'all good',
+  })
+})
+
+  // load the dataabase models we want to deal with
 const { Message } = require('./models/Message')
 const { User } = require('./models/User')
 
